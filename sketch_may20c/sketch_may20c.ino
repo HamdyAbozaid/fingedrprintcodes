@@ -15,11 +15,13 @@ Adafruit_Fingerprint finger(&mySerial);
 
 // Button pin
 const int addButtonPin = 18;
+const int wifiConfigButtonPin = 27;  // غير 27 لو عايز, على حسب الزرار اللي انت عايزه يفتح الوايفاي مانيجر
 
 struct FingerprintData {
   uint16_t id;
   String name;
 };
+
 FingerprintData fingerprints[128];
 uint16_t nextID = 0;
 int lastDetectedID = -1;
@@ -60,7 +62,12 @@ void setup() {
   delay(1000);
   lcd.clear();
 
-  setupWiFi();
+  if (WiFi.status() != WL_CONNECTED) {
+  lcd.clear();
+  lcd.print("No WiFi conn.");
+  delay(2000);
+}
+
   checkSensorStatus();
 
   nextID = finger.getTemplateCount();
@@ -71,6 +78,14 @@ void setup() {
 }
 
 void loop() {
+  if (digitalRead(wifiConfigButtonPin) == LOW) {
+    smartDelay(50);
+    if (digitalRead(wifiConfigButtonPin) == LOW) {
+      setupWiFiManager();
+      displayMainMenu();
+    }
+  }
+
   if (digitalRead(addButtonPin) == LOW) {
     smartDelay(50);
     if (digitalRead(addButtonPin) == LOW) {
@@ -83,19 +98,26 @@ void loop() {
   delay(100);
 }
 
-void setupWiFi() {
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+void setupWiFiManager() {
+  WiFiManager wm;
+
   lcd.clear();
-  lcd.print("Connecting WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(300);
-    lcd.print(".");
+  lcd.print("Starting WiFi AP");
+  lcd.setCursor(0, 1);
+  lcd.print("Connect to: ESP32");
+
+  bool res = wm.autoConnect("ESP32-Setup", "12345678"); // AP SSID & Password
+
+  lcd.clear();
+  if (res) {
+    lcd.print("WiFi Connected");
+    delay(1500);
+  } else {
+    lcd.print("WiFi Failed");
+    delay(3000);
   }
-  lcd.clear();
-  lcd.print("WiFi Connected");
-  delay(1000);
-  lcd.clear();
 }
+
 
 void displayMainMenu() {
   lcd.clear();
