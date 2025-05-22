@@ -2,12 +2,8 @@
 #include <LiquidCrystal.h>
 #include <Adafruit_Fingerprint.h>
 #include <HardwareSerial.h>
-#include <WiFi.h>
+#include <WiFiManager.h>
 #include <HTTPClient.h>
-
-// WiFi settings
-#define WIFI_SSID "Alla"
-#define WIFI_PASSWORD "GREA@G&R6"
 
 // LCD pins
 const int rs = 19, en = 23, d4 = 32, d5 = 33, d6 = 25, d7 = 26;
