@@ -4,7 +4,7 @@
 #include <HardwareSerial.h>
 #include <WiFiManager.h>
 #include <HTTPClient.h>
-
+//sexpko;[]
 // LCD pins
 const int rs = 19, en = 23, d4 = 32, d5 = 33, d6 = 25, d7 = 26;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
